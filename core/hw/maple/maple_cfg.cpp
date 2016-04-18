@@ -3,6 +3,7 @@
 #include "maple_helper.h"
 #include "maple_devs.h"
 #include "maple_cfg.h"
+#include "cfg/cfg.h"
 
 #define HAS_VMU
 /*
@@ -27,7 +28,7 @@ extern u32 vks[4];
 extern s8 joyx[4],joyy[4];
 extern u8 rt[4],lt[4];
 
-u8 GetBtFromSgn(s8 val)
+u8 GetBtFromSgn(s8 val) 
 {
 	return val+128;
 }
@@ -69,10 +70,37 @@ void mcfg_Create(MapleDeviceType type,u32 bus,u32 port)
 void mcfg_CreateDevices()
 {
 #if DC_PLATFORM == DC_PLATFORM_DREAMCAST
-	mcfg_Create(MDT_SegaController,0,5);
-
-	mcfg_Create(MDT_SegaVMU,0,0);
-	mcfg_Create(MDT_SegaVMU,0,1);
+	
+	int controllers;
+	
+	// get the required number of controllers from the cfg file
+	controllers = cfgLoadInt("input", "num_controllers", 1);
+	
+	switch(controllers)
+	{	
+		case 4:
+	        mcfg_Create(MDT_SegaController,3,5);
+	        mcfg_Create(MDT_SegaVMU,3,0);
+	        mcfg_Create(MDT_SegaVMU,3,1);
+			//no break here to allow fall through
+		case 3:
+	        mcfg_Create(MDT_SegaController,2,5);
+	        mcfg_Create(MDT_SegaVMU,2,0);
+	        mcfg_Create(MDT_SegaVMU,2,1);
+			//no break here to allow fall through
+		case 2:
+	        mcfg_Create(MDT_SegaController,1,5);
+	        mcfg_Create(MDT_SegaVMU,1,0);
+	        mcfg_Create(MDT_SegaVMU,1,1);
+			//no break here to allow fall through
+		case 1:
+		default:
+			mcfg_Create(MDT_SegaController,0,5);
+			mcfg_Create(MDT_SegaVMU,0,0);
+			mcfg_Create(MDT_SegaVMU,0,1);			
+		break;
+	}
+	
 #else
 	mcfg_Create(MDT_NaomiJamma, 0, 5);
 #endif
