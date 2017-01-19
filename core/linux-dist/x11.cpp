@@ -3,7 +3,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+
 #include <iostream>
+#include <X11/XKBlib.h>
 
 #if !defined(GLES)
 	#include <GL/gl.h>
@@ -159,6 +161,9 @@ void input_x11_init()
 
 void x11_window_create()
 {
+	
+	Bool ar_set, ar_supp = false;
+	
 	if (cfgLoadInt("pvr", "nox11", 0) == 0)
 	{
 		XInitThreads();
@@ -325,6 +330,9 @@ void x11_window_create()
 		x11_disp = (void*)x11Display;
 		x11_win = (void*)x11Window;
 		x11_vis = (void*)x11Visual->visual;
+		
+		ar_set = XkbSetDetectableAutoRepeat(x11Display, True, &ar_supp);
+        printf("XkbSetDetectableAutoRepeat returns %u, supported = %u\n",ar_set, ar_supp);
 	}
 	else
 	{
