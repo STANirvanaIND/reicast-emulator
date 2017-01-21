@@ -73,9 +73,9 @@ void start_shutdown(void);
 void event_x11_handle()
 {
 	XEvent event;
-	
-	while(XPending(x11_disp)) {
-		XNextEvent(x11_disp, &event);
+
+	while(XPending((Display*)x11_disp)) {
+		XNextEvent((Display*)x11_disp, &event);
 
 		if (event.type == ClientMessage &&
 		event.xclient.data.l[0] == wmDeleteMessage) {
@@ -161,9 +161,9 @@ void input_x11_init()
 
 void x11_window_create()
 {
-	
+
 	Bool ar_set, ar_supp = false;
-	
+
 	if (cfgLoadInt("pvr", "nox11", 0) == 0)
 	{
 		XInitThreads();
@@ -278,7 +278,7 @@ void x11_window_create()
 		// Creates the X11 window
 		x11Window = XCreateWindow(x11Display, RootWindow(x11Display, x11Screen), (ndcid%3)*640, (ndcid/3)*480, x11_width, x11_height,
 			0, depth, InputOutput, x11Visual->visual, ui32Mask, &sWA);
-		
+
  		// Capture the close window event
 		wmDeleteMessage = XInternAtom(x11Display, "WM_DELETE_WINDOW", False);
 		XSetWMProtocols(x11Display, x11Window, &wmDeleteMessage, 1);
@@ -330,7 +330,7 @@ void x11_window_create()
 		x11_disp = (void*)x11Display;
 		x11_win = (void*)x11Window;
 		x11_vis = (void*)x11Visual->visual;
-		
+
 		ar_set = XkbSetDetectableAutoRepeat(x11Display, True, &ar_supp);
         printf("XkbSetDetectableAutoRepeat returns %u, supported = %u\n",ar_set, ar_supp);
 	}
@@ -355,7 +355,7 @@ void x11_gl_context_destroy()
 {
 	printf("Destroy GL Context\n");
 	glXMakeCurrent((Display*)x11_disp, None, NULL);
- 	glXDestroyContext((Display*)x11_disp, x11_glc);
+ 	glXDestroyContext((Display*)x11_disp, (GLXContext)x11_glc);
 }
 
 
