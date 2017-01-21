@@ -4,7 +4,7 @@
 
 struct EvdevControllerMapping
 {
-	const char* name;
+	const char name[50];
 	const int Btn_A;
 	const int Btn_B;
 	const int Btn_C;
