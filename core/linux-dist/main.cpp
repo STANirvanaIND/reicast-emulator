@@ -225,7 +225,8 @@ void os_DoEvents()
 
 void os_SetWindowText(const char * text)
 {
-	printf("%s\n",text);
+	//Disabled terminal spam as it is displayed in the window bar
+	//printf("%s\n",text);
 	#if defined(SUPPORT_X11)
 		x11_window_set_text(text);
 	#endif
@@ -353,7 +354,7 @@ string find_user_data_dir()
 			// If XDG_DATA_HOME is set explicitly, we'll use that instead of $HOME/.config
 			data = (string)getenv("XDG_DATA_HOME") + "/reicast";
 		}
-		
+
 		if(!data.empty())
 		{
 			if((stat(data.c_str(), &info) != 0) || !(info.st_mode & S_IFDIR))
@@ -490,7 +491,7 @@ int main(int argc, wchar* argv[])
 		emscripten_set_main_loop(&dc_run, 100, false);
 	#endif
 
-	
+
 	#ifdef TARGET_PANDORA
 		clean_exit(0);
 	#endif
@@ -514,7 +515,7 @@ int main(int argc, wchar* argv[])
             #if defined(SUPPORT_X11)
                 /*Close the GL context */
                 x11_gl_context_destroy();
-	
+
 	        /* Destroy the window */
 	        x11_window_destroy();
             #endif
@@ -537,6 +538,3 @@ void os_DebugBreak()
 		exit(-1);
 	#endif
 }
-
-
-
